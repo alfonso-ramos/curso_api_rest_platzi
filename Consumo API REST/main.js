@@ -1,4 +1,4 @@
-const API_URL = "https://api.thedogapi.com/v1/images/search?limit=5"
+const API_URL = "https://api.thedogapi.com/v1/images/search?limit=5&api_key=c05cc44c-fd43-4354-8115-ccece0a30b02"
 
 async function randomDog(){
     const res = await fetch(API_URL)
