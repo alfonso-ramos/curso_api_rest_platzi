@@ -2,6 +2,9 @@ const API_URL_RANDOM = "https://api.thedogapi.com/v1/images/search?limit=2&api_k
 
 const API_URL_FAVORITES = "https://api.thedogapi.com/v1/favourites?api_key=c05cc44c-fd43-4354-8115-ccece0a30b02"
 
+const API_URL_FAVORITES_DELETE = (id) => `https://api.thedogapi.com/v1/favourites/${id}?api_key=c05cc44c-fd43-4354-8115-ccece0a30b02`
+
+
 const spanError = document.getElementById("error")
 
 async function loadRandomDog(){
@@ -36,9 +39,14 @@ async function loadFavoriteDog(){
     if(res.status !== 200){
         spanError.innerHTML = "Ocurrió un error " + res.status + " " + data.message
     }else{
-        data.forEach(dog => {
+        const section = document.getElementById("favoriteDoggos")
+        section.innerHTML = " ";
+        const h2 = document.createElement("h2");
+        const h2Text = document.createTextNode("Favoritos")
+        h2.appendChild(h2Text)
+        section.appendChild(h2)
 
-            const section = document.getElementById("favoriteDoggos")
+        data.forEach(dog => {
             const article = document.createElement("article")
             const img = document.createElement("img")
             const btn = document.createElement("button")
@@ -46,10 +54,11 @@ async function loadFavoriteDog(){
 
 
             btn.appendChild(btnText);
-            img.src = dog.image.url
-            img.width = 150
-            article.appendChild(img)
-            article.appendChild(btn)
+            img.src = dog.image.url;
+            img.width = 150;
+            article.appendChild(img);
+            btn.onclick= () => deleteFavoriteDog(dog.id);
+            article.appendChild(btn);
 
             section.appendChild(article)
         })
@@ -67,12 +76,31 @@ async function saveFavoriteDog(id){
         }),
     });
     const data = await res.json()
+
     console.log("Guardar en favoritos")
     console.log(res)
 
     if(res.status !== 200){
         spanError.innerHTML = "Ocurrió un error " + res.status + " " + data.message
+    }else{
+        console.log("Perrito guardado en favoritos")
+        loadFavoriteDog()
     }
 }
+
+async function deleteFavoriteDog(id){
+    const res = await fetch(API_URL_FAVORITES_DELETE(id),{
+        method: "DELETE",
+    });
+    const data = await res.json()
+
+    if(res.status !== 200){
+        spanError.innerHTML = "Ocurrió un error " + res.status + " " + data.message
+    }else{
+        console.log("Perrito borrado de favoritos")
+        loadFavoriteDog()
+    }
+}
+
 loadRandomDog()
 loadFavoriteDog()
