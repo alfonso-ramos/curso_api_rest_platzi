@@ -1,8 +1,8 @@
-const API_URL_RANDOM = "https://api.thedogapi.com/v1/images/search?limit=2&api_key=c05cc44c-fd43-4354-8115-ccece0a30b02"
+const API_URL_RANDOM = "https://api.thedogapi.com/v1/images/search?limit=2"
 
-const API_URL_FAVORITES = "https://api.thedogapi.com/v1/favourites?api_key=c05cc44c-fd43-4354-8115-ccece0a30b02"
+const API_URL_FAVORITES = "https://api.thedogapi.com/v1/favourites"
 
-const API_URL_FAVORITES_DELETE = (id) => `https://api.thedogapi.com/v1/favourites/${id}?api_key=c05cc44c-fd43-4354-8115-ccece0a30b02`
+const API_URL_FAVORITES_DELETE = (id) => `https://api.thedogapi.com/v1/favourites/${id}`
 
 
 const spanError = document.getElementById("error")
@@ -31,7 +31,12 @@ async function loadRandomDog(){
 }
 
 async function loadFavoriteDog(){
-    const res = await fetch(API_URL_FAVORITES)
+    const res = await fetch(API_URL_FAVORITES,{
+        methos: "GET",
+        headers:{
+            'X-API-KEY': 'c05cc44c-fd43-4354-8115-ccece0a30b02'
+        }
+    })
     data = await res.json()
     console.log("Favorites")
     console.log(data)
@@ -69,7 +74,8 @@ async function saveFavoriteDog(id){
     const res = await fetch(API_URL_FAVORITES,{
         method: "POST",
         headers:{
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-API-KEY': 'c05cc44c-fd43-4354-8115-ccece0a30b02'
         },
         body: JSON.stringify({
             image_id: id
@@ -91,6 +97,9 @@ async function saveFavoriteDog(id){
 async function deleteFavoriteDog(id){
     const res = await fetch(API_URL_FAVORITES_DELETE(id),{
         method: "DELETE",
+        headers: {
+            'X-API-KEY': 'c05cc44c-fd43-4354-8115-ccece0a30b02'
+        }
     });
     const data = await res.json()
 
