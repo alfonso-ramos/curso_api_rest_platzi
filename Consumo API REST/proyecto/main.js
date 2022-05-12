@@ -4,12 +4,14 @@ const API_URL_FAVORITES = "https://api.thedogapi.com/v1/favourites"
 
 const API_URL_FAVORITES_DELETE = (id) => `https://api.thedogapi.com/v1/favourites/${id}`
 
+const API_URL_UPLOAD = "https://api.thedogapi.com/v1/images/upload"
+
 
 const spanError = document.getElementById("error")
 
 async function loadRandomDog(){
     const res = await fetch(API_URL_RANDOM)
-    data = await res.json()
+    const data = await res.json()
     console.log("Random")
     console.log(data)
 
@@ -75,7 +77,7 @@ async function saveFavoriteDog(id){
         method: "POST",
         headers:{
             'Content-Type': 'application/json',
-            'X-API-KEY': 'c05cc44c-fd43-4354-8115-ccece0a30b02'
+            'X-API-KEY': 'c05cc44c-fd43-4354-8115-ccece0a30b02',
         },
         body: JSON.stringify({
             image_id: id
@@ -111,5 +113,30 @@ async function deleteFavoriteDog(id){
     }
 }
 
+async function uploadDogPic(){
+    const form = document.getElementById('uploadingForm')
+    const formData = new FormData(form);
+
+    console.log(formData.get('file'))
+
+    const res = await fetch(API_URL_UPLOAD, {
+        method:"POST",
+        headers: {
+            'X-API-KEY': 'c05cc44c-fd43-4354-8115-ccece0a30b02'
+        },
+        body: formData
+    })
+    const data = await res.json()
+
+    if(res.status !== 201){
+        spanError.innerHTML = "Ocurrió un error " + res.status + " " + data.message
+        console.log({data})
+    }else{
+        console.log("Perrito guardado")
+        console.log({data})
+        console.log(data.url)
+        saveFavoriteDog(data.url)
+    }
+}
 loadRandomDog()
 loadFavoriteDog()
